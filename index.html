@@ -24,20 +24,27 @@
     font-family: "Segoe UI", system-ui, sans-serif;
     background: radial-gradient(1200px 600px at 50% -10%, #271646, var(--bg));
     color: var(--text-main);
+
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+
+    min-height: 100vh;
+    min-height: 100dvh;
+
     margin: 0;
+    padding: 24px 16px;
+
     text-align: center;
+    overflow-x: hidden;
   }
 
   lottie-player {
-    width: 950px;
-    height: 520px;
-    filter: brightness(79%);
-
+      width: min(950px, 90vw);
+      aspect-ratio: 950 / 520;
+      height: auto;
+      filter: brightness(79%);
   }
 
   h1 {
