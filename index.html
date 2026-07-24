@@ -141,6 +141,27 @@
   .context-menu {
     text-align: left;
   }
+
+  /* Social Icons */
+  .icon-row {
+    display: flex;
+    gap: 14px;
+    margin-top: 18px;
+  }
+
+  .social {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .social:hover {
+    transform: translateY(-3px);
+    text-shadow: 0 0 20px wheat;
+  }
 </style>
 </head>
 
@@ -154,15 +175,21 @@
   autoplay>
 </lottie-player>
 
-<h1>This section is under construction</h1>
+<h1>This website is under construction</h1>
 <div class="subtitle">
-  We're actively building it - not abandoned, just not ready.
+  im actively building it! not abandoned, just not ready.
 </div>
-
 <div class="progress-container" aria-hidden="true">
   <div class="progress-bar" id="progressBar"></div>
 </div>
-<div class="progress-label">Development in progress</div>
+<div class="progress-label">Check back again later :)</div>
+
+<div class="icon-row">
+  <div class="social"><a href="mailto:contactme@kasra-seydi.ir"><img width="40px" src="svg/gmail.svg"></a></div>
+  <div class="social"><a href="https://github.com/ItsDenji777"><img width="46px" src="svg/github.svg"></a></div>
+  <div class="social"><a href="https://x.com/DenjisWorkspace"><img width="38px" src="svg/twitter.svg"></a></div>
+  <div class="social"><a href="https://www.instagram.com/its.denji777/"><img width="46px" src="svg/instagram.svg"></a></div>
+</div>
 
 <!-- <div class="devlog">
   Curious what's coming next?
