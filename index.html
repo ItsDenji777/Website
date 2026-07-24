@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Under Construction</title>
+<link rel="icon" type="image/svg+xml" href="favicon.ico" />
+
+<style>
+  :root {
+    --bg: #1d2026;
+    --panel: #292e36;
+    --accent: #6f21ff;
+    --accent-soft: #5b1ece;
+    --text-main: #e6eefc;
+    --text-muted: #9aa4b2;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: radial-gradient(1200px 600px at 50% -10%, #271646, var(--bg));
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  lottie-player {
+    width: 950px;
+    height: 520px;
+    filter: brightness(79%);
+
+  }
+
+  h1 {
+    font-size: 1.9em;
+    font-weight: 600;
+    margin: 0 0 8px;
+  }
+
+  .subtitle {
+    font-size: 1em;
+    color: var(--text-muted);
+    margin-bottom: 22px;
+  }
+
+  /* Progress */
+  .progress-container {
+    width: 300px;
+    height: 12px;
+    background: var(--panel);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+
+  .progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(
+      90deg,
+      var(--accent),
+      var(--accent-soft),
+      var(--accent)
+    );
+    background-size: 200% 100%;
+    animation: gradientMove 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes gradientMove {
+    from { background-position: 0% 0; }
+    to   { background-position: 100% 0; }
+  }
+
+  .progress-label {
+    font-size: 0.9em;
+    color: var(--text-muted);
+    margin-bottom: 22px;
+  }
+
+  /* Devlog link */
+  .devlog {
+    font-size: 0.95em;
+    margin-bottom: 26px;
+  }
+
+  .devlog a {
+    color: var(--accent);
+    text-decoration: none;
+    position: relative;
+  }
+
+  .devlog a::after {
+    content: "→";
+    margin-left: 6px;
+    transition: transform 0.2s ease;
+    display: inline-block;
+  }
+
+  .devlog a:hover::after {
+    transform: translateX(4px);
+  }
+
+  /* Button */
+  .back-btn {
+    border-radius: 999px;
+    padding: 10px 20px;
+    font-size: 15px;
+    color: var(--accent);
+    background: transparent;
+    border: 2px solid var(--accent);
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+
+  .back-btn:hover {
+    background-color: #2e343d;
+    box-shadow: 0 0 12px rgba(109, 0, 172, 0.4);
+    transform: translateY(-1px);
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .progress-bar {
+      animation: none;
+    }
+    .devlog a::after {
+      transition: none;
+    }
+  }
+
+  .context-menu {
+    text-align: left;
+  }
+</style>
+</head>
+
+<body style="background-color: #1d2026;">
+
+<lottie-player
+  src="/lottie/build.json"
+  background="transparent"
+  speed="1"
+  loop
+  autoplay>
+</lottie-player>
+
+<h1>This section is under construction</h1>
+<div class="subtitle">
+  We're actively building it - not abandoned, just not ready.
+</div>
+
+<div class="progress-container" aria-hidden="true">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+<div class="progress-label">Development in progress</div>
+
+<!-- <div class="devlog">
+  Curious what's coming next?
+  <a href="/DevLog">Follow the devlog</a>
+</div>
+
+<a href="/">
+  <button class="back-btn">Return to homepage</button>
+</a> -->
+
+<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+<script>
+  const targetProgress = 10; // ← change this value (0–100)
+  const bar = document.getElementById("progressBar");
+
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  if (prefersReducedMotion) {
+    bar.style.width = targetProgress + "%";
+  } else {
+    let current = 0;
+    const duration = 800; // ms
+    const startTime = performance.now();
+
+    function animate(time) {
+      const elapsed = time - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      current = progress * targetProgress;
+      bar.style.width = current + "%";
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    }
+
+    requestAnimationFrame(animate);
+  }
+</script>
+
+</body>
+</html>
