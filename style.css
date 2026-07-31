@@ -453,7 +453,6 @@ lottie-player {
     height: 44px;
     border: none;
     background: transparent;
-    background-image: url('assets/ui/taskbar-default.png');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     image-rendering: pixelated;

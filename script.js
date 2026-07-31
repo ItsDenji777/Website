@@ -207,6 +207,7 @@ async function runBoot() {
 
 async function finishBoot() {
     await loadAppData();
+    preloadAssets();           // ← preload everything now
     bootScreen.classList.add('hidden');
     document.body.style.cursor = 'default';
     initDesktop();
@@ -813,6 +814,76 @@ function updateClock() {
     document.getElementById('taskbar-date').textContent = now.toLocaleDateString([], {month:'short', day:'numeric'});
 }
 updateClock(); setInterval(updateClock, 1000);
+
+function preloadAssets() {
+    // Fixed SVG icons (apps, controls, start menu, socials, etc.)
+    const fixedSvgs = [
+        'assets/svg/about.svg',
+        'assets/svg/aboutos.svg',
+        'assets/svg/close.svg',
+        'assets/svg/contact.svg',
+        'assets/svg/devlog.svg',
+        'assets/svg/lock.svg',
+        'assets/svg/maximize.svg',
+        'assets/svg/minimize.svg',
+        'assets/svg/refresh.svg',
+        'assets/svg/restore.svg',
+        'assets/svg/search.svg',
+        'assets/svg/shutdown.svg',
+        'assets/svg/start.svg',
+        'assets/svg/techstack.svg',
+        'assets/svg/user.svg',
+        'assets/svg/projects.svg',
+        'assets/svg/socials/github.svg',
+        'assets/svg/socials/twitter.svg',
+        'assets/svg/socials/telegram.svg',
+        'assets/svg/socials/instagram.svg',
+    ];
+
+    // UI images
+    const uiImages = [
+        'assets/ui/taskbar-default.png',
+        'assets/ui/hover.png',
+        'assets/ui/not_focused.png',
+        'assets/ui/selected.png',
+        'assets/ui/minimized.png',
+        'assets/ui/btn.png',
+        'assets/ui/btn_hover.png',
+        'assets/ui/btn_click.png',
+        'assets/ui/small_btn.png',
+        'assets/ui/small_btn_hover.png',
+        'assets/ui/small_btn_click.png',
+    ];
+
+    // Cursors (only the ones actually used)
+    const cursors = [
+        'assets/cursors/pointer-dark.png',
+        'assets/cursors/grab-dark.png',
+        'assets/cursors/grabbing-dark.png',
+        'assets/cursors/n-resize.png',
+        'assets/cursors/s-resize.png',
+        'assets/cursors/e-resize.png',
+        'assets/cursors/w-resize.png',
+        'assets/cursors/ne-resize.png',
+        'assets/cursors/nw-resize.png',
+        'assets/cursors/se-resize.png',
+        'assets/cursors/sw-resize.png',
+    ];
+
+    // Tech stack icons (loaded from JSON)
+    const techIcons = (appData.techstack || [])
+        .map(t => `assets/svg/tech/${t.icon}`)
+        .filter(path => path);
+
+    // Combine all unique paths
+    const allAssets = [...fixedSvgs, ...uiImages, ...cursors, ...techIcons];
+
+    // Preload each asset as an Image object – browser will cache them
+    allAssets.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+}
 
 function initDesktop() {
     initDock();
