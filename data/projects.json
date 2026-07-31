@@ -1,0 +1,26 @@
+[
+  {
+    "title": "DenjiOS(Portfolio)",
+    "description": "This very interface – a desktop‑like portfolio.",
+    "tech": ["JavaScript", "CSS", "HTML5"],
+    "link": "https://github.com/ItsDenji777/Website"
+  },
+  {
+    "title": "Denjify",
+    "description": "A modern desktop music player application inspired by Spotify",
+    "tech": ["React", "CSS", "Node.js"],
+    "link": "https://github.com/ItsDenji777/Denjify"
+  },
+  {
+    "title": "Nata",
+    "description": "a Bridge between stuedents and their families with the school",
+    "tech": ["C#", "HTML", "CSS", "JavaScript"],
+    "link": "https://app.nata.exirdanesh.ir"
+  },
+  {
+    "title": "Cosmic Diary",
+    "description": "a space-themed community platform where users write diary logs and build & share custom planets in a growing collaborative universe.",
+    "tech": ["PHP", "HTML", "CSS", "MySQL", "JavaScript"],
+    "link": "https://cosmic-diary.infinityfree.io"
+  }
+]

@@ -1,242 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Under Construction</title>
-<link rel="icon" type="image/svg+xml" href="favicon.ico" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="DenjiOS – a pixel‑perfect desktop‑style portfolio by Kasra Seydi, showcasing projects, tech stack, and contact info.">
+    <title>DenjiOS - Portfolio</title>
 
-<style>
-  :root {
-    --bg: #1d2026;
-    --panel: #292e36;
-    --accent: #6f21ff;
-    --accent-soft: #5b1ece;
-    --text-main: #e6eefc;
-    --text-muted: #9aa4b2;
-  }
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" defer></script>
+    <link rel="stylesheet" href="style.css">
 
-  * {
-    box-sizing: border-box;
-  }
-
-  body {
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background: radial-gradient(1200px 600px at 50% -10%, #271646, var(--bg));
-    color: var(--text-main);
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    min-height: 100vh;
-    min-height: 100dvh;
-
-    margin: 0;
-    padding: 24px 16px;
-
-    text-align: center;
-    overflow-x: hidden;
-  }
-
-  lottie-player {
-      width: min(950px, 90vw);
-      aspect-ratio: 950 / 520;
-      height: auto;
-      filter: brightness(79%);
-  }
-
-  h1 {
-    font-size: 1.9em;
-    font-weight: 600;
-    margin: 0 0 8px;
-  }
-
-  .subtitle {
-    font-size: 1em;
-    color: var(--text-muted);
-    margin-bottom: 22px;
-  }
-
-  /* Progress */
-  .progress-container {
-    width: 300px;
-    height: 12px;
-    background: var(--panel);
-    border-radius: 999px;
-    overflow: hidden;
-    margin-bottom: 10px;
-  }
-
-  .progress-bar {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(
-      90deg,
-      var(--accent),
-      var(--accent-soft),
-      var(--accent)
-    );
-    background-size: 200% 100%;
-    animation: gradientMove 3s ease-in-out infinite alternate;
-  }
-
-  @keyframes gradientMove {
-    from { background-position: 0% 0; }
-    to   { background-position: 100% 0; }
-  }
-
-  .progress-label {
-    font-size: 0.9em;
-    color: var(--text-muted);
-    margin-bottom: 22px;
-  }
-
-  /* Devlog link */
-  .devlog {
-    font-size: 0.95em;
-    margin-bottom: 26px;
-  }
-
-  .devlog a {
-    color: var(--accent);
-    text-decoration: none;
-    position: relative;
-  }
-
-  .devlog a::after {
-    content: "→";
-    margin-left: 6px;
-    transition: transform 0.2s ease;
-    display: inline-block;
-  }
-
-  .devlog a:hover::after {
-    transform: translateX(4px);
-  }
-
-  /* Button */
-  .back-btn {
-    border-radius: 999px;
-    padding: 10px 20px;
-    font-size: 15px;
-    color: var(--accent);
-    background: transparent;
-    border: 2px solid var(--accent);
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-  }
-
-  .back-btn:hover {
-    background-color: #2e343d;
-    box-shadow: 0 0 12px rgba(109, 0, 172, 0.4);
-    transform: translateY(-1px);
-  }
-
-  /* Reduced motion */
-  @media (prefers-reduced-motion: reduce) {
-    .progress-bar {
-      animation: none;
-    }
-    .devlog a::after {
-      transition: none;
-    }
-  }
-
-  .context-menu {
-    text-align: left;
-  }
-
-  /* Social Icons */
-  .icon-row {
-    display: flex;
-    gap: 14px;
-    margin-top: 18px;
-  }
-
-  .social {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .social:hover {
-    transform: translateY(-3px);
-    text-shadow: 0 0 20px wheat;
-  }
-</style>
+    <link rel="icon" type="image/png" href="/assets/favicons/favicon-96x96.png?v=1" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="/assets/favicons/favicon.svg?v=1">
+    <link rel="shortcut icon" href="/assets/favicons/favicon.ico?v=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicons/apple-touch-icon.png?v=1">
+    <meta name="apple-mobile-web-app-title" content="DenjiOS">
+    <link rel="manifest" href="/assets/favicons/site.webmanifest?v=1">
 </head>
+<body>
+    <div id="wallpaper"></div>
 
-<body style="background-color: #1d2026;">
+    <div id="boot-screen">
+        <div class="boot-logo" id="boot-logo">
+            <img src="assets/images/os_pixelated.png" alt="DenjiOS logo">
+        </div>
+        <div class="boot-logo-text" id="boot-logo-text">DENJI<span class="os-tag">OS</span></div>
+        <div id="boot-lottie"></div>
+    </div>
 
-<lottie-player
-  src="/lottie/build.json"
-  background="transparent"
-  speed="1"
-  loop
-  autoplay>
-</lottie-player>
+    <div id="desktop">
+        <div class="desktop-icons" id="desktop-icons"></div>
+        <div id="selection-box"></div>
+    </div>
 
-<h1>This website is under construction</h1>
-<div class="subtitle">
-  im actively building it! not abandoned, just not ready.
-</div>
-<div class="progress-container" aria-hidden="true">
-  <div class="progress-bar" id="progressBar"></div>
-</div>
-<div class="progress-label">Check back again later :)</div>
+    <div id="windows-container"></div>
 
-<div class="icon-row">
-  <div class="social"><a href="mailto:contactme@kasra-seydi.ir"><img width="40px" src="svg/gmail.svg"></a></div>
-  <div class="social"><a href="https://github.com/ItsDenji777"><img width="46px" src="svg/github.svg"></a></div>
-  <div class="social"><a href="https://x.com/DenjisWorkspace"><img width="38px" src="svg/twitter.svg"></a></div>
-  <div class="social"><a href="https://www.instagram.com/its.denji777/"><img width="46px" src="svg/instagram.svg"></a></div>
-</div>
+    <div id="taskbar">
+        <button id="start-btn" title="Start Menu">
+            <div class="start-icon" style="mask-image: url('assets/svg/start.svg'); -webkit-mask-image: url('assets/svg/start.svg');"></div>
+        </button>
+        <div id="taskbar-apps"></div>
+        <div id="taskbar-clock">
+            <div class="time" id="taskbar-time">12:00</div>
+            <div id="taskbar-date">Jan 1</div>
+        </div>
+    </div>
 
-<!-- <div class="devlog">
-  Curious what's coming next?
-  <a href="/DevLog">Follow the devlog</a>
-</div>
+    <div id="start-menu">
+        <div class="menu-header">
+            <div class="avatar">
+                <div class="profile-icon" style="mask-image: url('assets/svg/user.svg'); -webkit-mask-image: url('assets/svg/user.svg');"></div>
+            </div>
+            <div class="profile-info">
+                <span class="name">User</span>
+                <span class="email">user@kasra-seydi.ir</span>
+            </div>
+        </div>
+        <div class="menu-search">
+            <div class="search-icon" style="mask-image: url('assets/svg/search.svg'); -webkit-mask-image: url('assets/svg/search.svg');"></div>
+            <input type="text" placeholder="Type to search..." id="menu-search-input">
+        </div>
+        <div class="menu-grid" id="menu-grid"></div>
+        <div class="menu-footer">
+            <button id="menu-shutdown">
+                <div class="footer-icon" style="mask-image: url('assets/svg/shutdown.svg'); -webkit-mask-image: url('assets/svg/shutdown.svg');"></div>
+            </button>
+            <button id="menu-lock">
+                <div class="footer-icon" style="mask-image: url('assets/svg/lock.svg'); -webkit-mask-image: url('assets/svg/lock.svg');"></div>
+            </button>
+        </div>
+    </div>
 
-<a href="/">
-  <button class="back-btn">Return to homepage</button>
-</a> -->
+    <div id="context-menu" style="display:none; position:fixed; z-index:2000; background:var(--surface0); backdrop-filter:blur(16px); border:1px solid var(--border); border-radius:8px; padding:4px; min-width:180px;">
+        <div class="ctx-item" data-action="refresh">
+            <div class="ctx-icon" style="mask-image: url('assets/svg/refresh.svg'); -webkit-mask-image: url('assets/svg/refresh.svg');"></div>
+            Refresh
+        </div>
+        <div class="ctx-item" data-action="aboutos">
+            <div class="ctx-icon" style="mask-image: url('assets/svg/aboutos.svg'); -webkit-mask-image: url('assets/svg/aboutos.svg');"></div>
+            About This OS
+        </div>
+    </div>
 
-<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-
-<script>
-  const targetProgress = 10; // ← change this value (0–100)
-  const bar = document.getElementById("progressBar");
-
-  const prefersReducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
-
-  if (prefersReducedMotion) {
-    bar.style.width = targetProgress + "%";
-  } else {
-    let current = 0;
-    const duration = 800; // ms
-    const startTime = performance.now();
-
-    function animate(time) {
-      const elapsed = time - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      current = progress * targetProgress;
-      bar.style.width = current + "%";
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
-    }
-
-    requestAnimationFrame(animate);
-  }
-</script>
-
+    <script src="script.js" defer></script>
 </body>
 </html>

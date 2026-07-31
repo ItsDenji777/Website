@@ -1,0 +1,13 @@
+{
+    "title": "DenjiOS",
+    "version": "v1.0",
+    "description": "A desktop‑style portfolio interface…",
+    "footer": "Built with 💜 by Denji",
+    "systemInfo": [
+        { "label": "Architecture", "value": "static:idk 128x?" },
+        { "label": "CPU", "value": "static:Core i∞-99999K" },
+        { "label": "RAM", "value": "static:Too Much" },
+        { "label": "GPU", "value": "static:DenjiTX 9090 Super" },
+        { "label": "Why so stacked?", "value": "static:Cause i can >:3" }  
+    ]
+}
