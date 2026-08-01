@@ -814,7 +814,7 @@ lottie-player {
 
 .tech-card {
     background: var(--window-bg-alt);
-    padding: 16px 8px;
+    padding: 16px 0;
     text-align: center;
     border: 2px solid var(--border);
     transition: all 0.2s;
