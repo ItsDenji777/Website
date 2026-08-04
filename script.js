@@ -842,7 +842,6 @@ function preloadAssets() {
 
     // UI images
     const uiImages = [
-        'assets/ui/taskbar-default.png',
         'assets/ui/hover.png',
         'assets/ui/not_focused.png',
         'assets/ui/selected.png',
