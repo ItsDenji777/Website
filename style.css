@@ -889,7 +889,6 @@ lottie-player {
 .contact-content textarea {
     width: 100%;
     padding: 10px 14px;
-    border-radius: 8px;
     border: 1px solid var(--border);
     background: var(--window-bg-alt);
     color: var(--text-main);
