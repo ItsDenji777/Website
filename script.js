@@ -26,7 +26,7 @@ async function loadAppData() {
             title: 'DenjiOS',
             version: 'v1.0',
             description: 'A desktop‑style portfolio interface.',
-            footer: 'Built with 💜 by Denji',
+            footer: 'Built with<img class="love" src="assets/svg/heart.svg">by Denji',
             systemInfo: []
         };
     }
