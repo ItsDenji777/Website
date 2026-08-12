@@ -390,15 +390,14 @@ lottie-player {
 
 #taskbar {
     position: fixed;
-    bottom: 8px;
+    bottom: -3px;
     left: 50%;
     transform: translateX(-50%);
     height: var(--taskbar-height);
     background: var(--taskbar-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--surface1);
-    border-radius: 16px;
+    border: 2px solid var(--accent);
     display: flex;
     align-items: center;
     gap: 6px;
@@ -516,7 +515,7 @@ lottie-player {
 
 #start-menu {
     position: fixed;
-    bottom: calc(var(--taskbar-height) + 16px);
+    bottom: calc(var(--taskbar-height) + 9px);
     left: 50%;
     width: 340px;
     background: var(--surface0);
