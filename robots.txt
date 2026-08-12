@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kasra-seydi.ir/sitemap.xml
