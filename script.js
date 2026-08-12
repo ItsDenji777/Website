@@ -70,7 +70,7 @@ const APP_DEFS = {
     techstack: {
         title: 'Tech Stack',
         icon: 'assets/svg/techstack.svg',
-        width: 520, height: 420, x: 200, y: 100,
+        width: 597, height: 507, x: 200, y: 100,
         content: () => {
             const techs = appData.techstack;
             return `<div class="techstack-content">
@@ -102,7 +102,7 @@ const APP_DEFS = {
     contact: {
         title: 'Contact Me',
         icon: 'assets/svg/contact.svg',
-        width: 420, height: 480, x: 100, y: 60,
+        width: 420, height: 494, x: 100, y: 60,
         content: () => `
             <div class="contact-content">
                 <h3 style="color:var(--text-main);">Get In Touch</h3>
@@ -207,10 +207,20 @@ async function runBoot() {
 
 async function finishBoot() {
     await loadAppData();
-    preloadAssets();           // ← preload everything now
+    await preloadAssets();
+
+    initDesktop();
+
+    for (let i = 0; i < 4; i++) {
+        await new Promise(r => requestAnimationFrame(r));
+    }
+
+    void document.getElementById('desktop').offsetHeight;
+
+    await new Promise(r => setTimeout(r, 20));
+
     bootScreen.classList.add('hidden');
     document.body.style.cursor = 'default';
-    initDesktop();
 }
 
 const windowsContainer = document.getElementById('windows-container');
@@ -816,7 +826,6 @@ function updateClock() {
 updateClock(); setInterval(updateClock, 1000);
 
 function preloadAssets() {
-    // Fixed SVG icons (apps, controls, start menu, socials, etc.)
     const fixedSvgs = [
         'assets/svg/about.svg',
         'assets/svg/aboutos.svg',
@@ -840,7 +849,6 @@ function preloadAssets() {
         'assets/svg/socials/instagram.svg',
     ];
 
-    // UI images
     const uiImages = [
         'assets/ui/hover.png',
         'assets/ui/not_focused.png',
@@ -854,7 +862,6 @@ function preloadAssets() {
         'assets/ui/small_btn_click.png',
     ];
 
-    // Cursors (only the ones actually used)
     const cursors = [
         'assets/cursors/pointer-dark.png',
         'assets/cursors/grab-dark.png',
@@ -869,19 +876,22 @@ function preloadAssets() {
         'assets/cursors/sw-resize.png',
     ];
 
-    // Tech stack icons (loaded from JSON)
     const techIcons = (appData.techstack || [])
         .map(t => `assets/svg/tech/${t.icon}`)
         .filter(path => path);
 
-    // Combine all unique paths
     const allAssets = [...fixedSvgs, ...uiImages, ...cursors, ...techIcons];
 
-    // Preload each asset as an Image object – browser will cache them
-    allAssets.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
+    return Promise.all(
+        allAssets.map(src => {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = resolve;
+                img.onerror = () => resolve();
+                img.src = src;
+            });
+        })
+    );
 }
 
 function initDesktop() {

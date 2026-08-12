@@ -218,7 +218,7 @@ lottie-player {
 #selection-box {
     position: absolute;
     border: 2px solid var(--accent);
-    background: rgba(124, 77, 255, 0.1);
+    background: rgba(124, 77, 255, 0.158);
     pointer-events: none;
     z-index: 5;
     display: none;
@@ -550,8 +550,8 @@ lottie-player {
     gap: 12px;
     padding: 10px 12px;
     background: rgba(255, 255, 255, 0.03);
-    border-radius: 12px;
     margin-bottom: 4px;
+    outline: 0.5px solid var(--surface2);
 }
 
 .menu-header .avatar {
@@ -597,9 +597,10 @@ lottie-player {
     align-items: center;
     gap: 8px;
     background: var(--surface1);
-    border-radius: 8px;
     padding: 8px 12px;
     margin-bottom: 4px;
+    outline: 2px solid var(--surface2);
+    outline-offset: -1px;
 }
 
 .menu-search .search-icon {
@@ -634,12 +635,10 @@ lottie-player {
     align-items: center;
     gap: 6px;
     padding: 12px 8px;
-    border-radius: 10px;
     cursor: pointer;
     background: transparent;
     border: none;
     color: var(--subtext0);
-    transition: all 0.15s;
     font-size: 12px;
 }
 
@@ -649,7 +648,7 @@ lottie-player {
 }
 
 .menu-grid-item:hover {
-    background: rgba(255, 255, 255, 0.08);
+    outline: 3px solid rgba(255, 255, 255, 0.144);
     color: var(--text-main);
 }
 
@@ -942,7 +941,7 @@ lottie-player {
 
 .aboutos-content .system-info {
     background: var(--window-bg-alt);
-    border-radius: 8px;
+    border: 2px solid var(--border);
     padding: 14px;
     margin-top: 12px;
 }
@@ -963,6 +962,17 @@ lottie-player {
     color: var(--text-main);
 }
 
+.love {
+    width: 22px;
+    margin: 0 4px 0 3px;
+    margin-bottom: -4px;
+    transition: scale 0.2s ease;
+}
+
+.love:active {
+    scale: 0.8;
+}
+
 .ctx-item {
     display: flex;
     align-items: center;
@@ -970,7 +980,6 @@ lottie-player {
     padding: 8px 14px;
     cursor: pointer;
     color: var(--subtext0);
-    border-radius: 5px;
 }
 
 .ctx-item .ctx-icon {
