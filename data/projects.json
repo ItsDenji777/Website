@@ -22,5 +22,11 @@
     "description": "a space-themed community platform where users write diary logs and build & share custom planets in a growing collaborative universe.",
     "tech": ["PHP", "HTML", "CSS", "MySQL", "JavaScript"],
     "link": "https://cosmic-diary.infinityfree.io"
+  },
+  {
+    "title": "Userplugins",
+    "description": "Collection of Vencord Userplugins to improve your experiance!",
+    "tech": ["TypeScript"],
+    "link": "https://github.com/NuzProjects/Vencord-Userplugins"
   }
 ]
