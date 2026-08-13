@@ -184,6 +184,8 @@ const bootLogo = document.getElementById('boot-logo');
 const bootLogoText = document.getElementById('boot-logo-text');
 const bootLottie = document.getElementById('boot-lottie');
 
+bootScreen.addEventListener('contextmenu', e => e.preventDefault());
+
 function createLottie() {
     const player = document.createElement('lottie-player');
     player.setAttribute('src', 'assets/lottie/loading.json');
@@ -847,6 +849,7 @@ function preloadAssets() {
         'assets/svg/socials/twitter.svg',
         'assets/svg/socials/telegram.svg',
         'assets/svg/socials/instagram.svg',
+        'assets/svg/heart.svg'
     ];
 
     const uiImages = [
