@@ -235,6 +235,7 @@ let globalZIndex = 10;
 let focusedWindowApp = null;
 
 windowsContainer.addEventListener('contextmenu', e => e.preventDefault());
+contextMenu.addEventListener('contextmenu', e => e.preventDefault());
 
 function getDockIcon(appId) {
     return taskbarApps.querySelector(`.taskbar-app-btn[data-app="${appId}"]`);

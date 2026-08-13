@@ -622,6 +622,11 @@ lottie-player {
     width: 100%;
 }
 
+#menu-search-input {
+    font-family: 'Monocraft', monospace;
+    font-size: 13px;
+}
+
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -1134,7 +1139,9 @@ lottie-player {
 body,
 #desktop,
 #start-menu,
-#taskbar {
+#taskbar,
+#context-menu,
+#boot-screen {
     cursor: url('assets/cursors/default-alt-dark.png') 4 1, auto;
 }
 
