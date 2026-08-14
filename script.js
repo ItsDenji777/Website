@@ -25,7 +25,7 @@ async function loadAppData() {
         appData.aboutos = {
             title: 'DenjiOS',
             version: 'v1.0',
-            description: 'A desktop‑style portfolio interface.',
+            description: 'A desktop‑style portfolio interface…',
             footer: 'Built with<img class="love" src="assets/svg/heart.svg">by Denji',
             systemInfo: []
         };
@@ -236,6 +236,8 @@ let focusedWindowApp = null;
 
 windowsContainer.addEventListener('contextmenu', e => e.preventDefault());
 contextMenu.addEventListener('contextmenu', e => e.preventDefault());
+taskbar.addEventListener('contextmenu', e => e.preventDefault());
+startMenu.addEventListener('contextmenu', e => e.preventDefault());
 
 function getDockIcon(appId) {
     return taskbarApps.querySelector(`.taskbar-app-btn[data-app="${appId}"]`);

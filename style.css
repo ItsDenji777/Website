@@ -149,7 +149,7 @@ lottie-player {
 #desktop {
     position: absolute;
     inset: 0;
-    bottom: calc(var(--taskbar-height) + 8px);
+    /* bottom: calc(var(--taskbar-height) + 8px); */
     z-index: 0;
     overflow: hidden;
 }
