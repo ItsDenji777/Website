@@ -1,4 +1,9 @@
+const SUPABASE_URL = 'https://kiwempyqknlyumevwkeu.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpd2VtcHlxa25seXVtZXZ3a2V1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMzEzNzMsImV4cCI6MjEwMzYwNzM3M30.y5PLVDQtMLAK12GQEMoCH2BjLHgIB2hicRUg5jwI4Hg';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
 let appData = {};
+let devlogCache = null;
 
 async function loadAppData() {
     try {
@@ -92,9 +97,8 @@ const APP_DEFS = {
         content: () => `
             <div class="devlog-content">
                 <h3 style="color:var(--text-main);">Development Log</h3>
-                <div class="devlog-placeholder">
-                    <p style="font-size:16px;">:D Supabase integration coming soon!</p>
-                    <p>Real‑time updates and dynamic entries will appear here.</p>
+                <div class="devlog-loading">
+                    <p style="font-size:16px;">Loading entries…</p>
                 </div>
                 <div class="devlog-timeline"></div>
             </div>`
@@ -230,14 +234,29 @@ const taskbarApps = document.getElementById('taskbar-apps');
 const startBtn = document.getElementById('start-btn');
 const startMenu = document.getElementById('start-menu');
 const contextMenu = document.getElementById('context-menu');
+const taskbar = document.getElementById('taskbar');
 let openWindows = {};
 let globalZIndex = 10;
 let focusedWindowApp = null;
+
+const TASKBAR_HEIGHT = 53;
 
 windowsContainer.addEventListener('contextmenu', e => e.preventDefault());
 contextMenu.addEventListener('contextmenu', e => e.preventDefault());
 taskbar.addEventListener('contextmenu', e => e.preventDefault());
 startMenu.addEventListener('contextmenu', e => e.preventDefault());
+
+const taskbarGuard = document.createElement('div');
+taskbarGuard.id = 'taskbar-guard';
+document.body.appendChild(taskbarGuard);
+
+taskbarGuard.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    e.stopPropagation();
+});
+taskbarGuard.addEventListener('mousedown', e => {
+    e.stopPropagation();
+});
 
 function getDockIcon(appId) {
     return taskbarApps.querySelector(`.taskbar-app-btn[data-app="${appId}"]`);
@@ -304,7 +323,7 @@ function setupWindowEvents(win, appId) {
             let newTop  = mouseY - normalH * relY;
 
             const maxLeft = window.innerWidth - normalW;
-            const maxTop  = window.innerHeight - 64 - normalH;
+            const maxTop  = window.innerHeight - TASKBAR_HEIGHT - normalH;
             newLeft = Math.max(0, Math.min(newLeft, maxLeft));
             newTop  = Math.max(0, Math.min(newTop, maxTop));
 
@@ -346,7 +365,7 @@ function setupWindowEvents(win, appId) {
         const dx = e.clientX - startX, dy = e.clientY - startY;
         let newLeft = startLeft + dx, newTop = startTop + dy;
         newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - win.offsetWidth));
-        newTop = Math.max(0, Math.min(newTop, window.innerHeight - 64 - win.offsetHeight));
+        newTop = Math.max(0, Math.min(newTop, window.innerHeight - TASKBAR_HEIGHT - win.offsetHeight));
         win.style.left = newLeft + 'px';
         win.style.top = newTop + 'px';
         if (openWindows[appId]) openWindows[appId].savedPos = { x: newLeft, y: newTop };
@@ -404,6 +423,10 @@ function launchApp(appId) {
         savedSize: { width: parseFloat(win.style.width), height: parseFloat(win.style.height) }
     };
     focusWindow(appId);
+
+    if (appId === 'devlog') {
+        loadDevlogData(win);
+    }
 
     win.style.opacity = '0';
     win.style.transform = 'scale(0.9)';
@@ -472,7 +495,7 @@ function animateRestore(appId) {
         targetLeft = 0;
         targetTop = 0;
         targetWidth = window.innerWidth;
-        targetHeight = window.innerHeight - 64;
+        targetHeight = window.innerHeight - TASKBAR_HEIGHT;
     } else {
         targetLeft = winData.savedPos?.x ?? 100;
         targetTop  = winData.savedPos?.y ?? 100;
@@ -545,7 +568,7 @@ function toggleMaximize(appId) {
 
         requestAnimationFrame(() => {
             win.style.width = '100vw';
-            win.style.height = 'calc(100vh - 64px)';
+            win.style.height = `calc(100vh - ${TASKBAR_HEIGHT}px)`;
             win.style.left = '0px';
             win.style.top = '0px';
             win.classList.add('maximized');
@@ -806,8 +829,8 @@ function initStartMenu() {
 desktop.addEventListener('contextmenu', e => {
     e.preventDefault();
     contextMenu.style.display = 'block';
-    contextMenu.style.left = Math.min(e.clientX, window.innerWidth-200) + 'px';
-    contextMenu.style.top = Math.min(e.clientY, window.innerHeight-150) + 'px';
+    contextMenu.style.left = Math.min(e.clientX, window.innerWidth - 200) + 'px';
+    contextMenu.style.top = Math.min(e.clientY, window.innerHeight - 150) + 'px';
     closeStartMenu();
 });
 
@@ -822,6 +845,71 @@ contextMenu.querySelectorAll('.ctx-item').forEach(item => {
         contextMenu.style.display = 'none';
     });
 });
+
+async function fetchDevlogEntries() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('devlog_entries')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('Supabase error:', error);
+            return [];
+        }
+        return data || [];
+    } catch (err) {
+        console.error('Failed to fetch DevLog:', err);
+        return [];
+    }
+}
+
+async function loadDevlogData(win) {
+    const timeline = win.querySelector('.devlog-timeline');
+    const loading = win.querySelector('.devlog-loading');
+    if (!timeline) return;
+
+    let entries;
+    if (devlogCache !== null) {
+        entries = devlogCache;
+    } else {
+        entries = await fetchDevlogEntries();
+        devlogCache = entries;
+    }
+
+    if (loading) {
+        loading.classList.add('fade-out');
+        await new Promise(r => setTimeout(r, 300));
+        loading.style.display = 'none';
+    }
+
+    if (entries.length === 0) {
+        timeline.innerHTML = '<p style="color:var(--text-dim); text-align:center;">No entries yet.</p>';
+    } else {
+        timeline.innerHTML = entries.map(entry => {
+            const timestamp = entry.created_at ? new Date(entry.created_at) : null;
+            const dateStr = timestamp
+                ? timestamp.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+                : 'Unknown date';
+            const timeStr = timestamp
+                ? timestamp.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+                : '';
+
+            return `
+                <div class="devlog-card">
+                    <div class="devlog-card-header">
+                        <span class="devlog-date">${dateStr}</span>
+                        <span class="devlog-time">${timeStr}</span>
+                    </div>
+                    <div class="devlog-card-body">${entry.content || ''}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    void timeline.offsetWidth;
+    timeline.classList.add('slide-up');
+}
 
 function updateClock() {
     const now = new Date();

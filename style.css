@@ -406,6 +406,17 @@ lottie-player {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
+#taskbar-guard {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: var(--taskbar-height);
+    z-index: 999;
+    pointer-events: auto;
+    background: transparent;
+}
+
 #start-btn {
     width: 34px;
     height: 34px;
@@ -844,22 +855,87 @@ lottie-player {
     padding: 20px;
 }
 
-.devlog-placeholder {
+.devlog-loading {
     background: var(--window-bg-alt);
     padding: 20px;
     text-align: center;
     border: 1px dashed var(--border);
     margin-top: 5px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.devlog-placeholder p {
+.devlog-loading p {
     color: var(--text-dim);
     margin: 8px 0;
     letter-spacing: 0.4px;
 }
 
+.devlog-loading.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
 .devlog-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     margin-top: 16px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.devlog-timeline.slide-up {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.devlog-card {
+    background: var(--window-bg-alt);
+    border: 2px solid var(--border);
+    padding: 0;
+    transition: border-color 0.2s;
+}
+
+.devlog-card:hover {
+    border-color: var(--accent);
+}
+
+.devlog-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+}
+
+.devlog-time {
+    font-size: 11px;
+    color: var(--subtext0);
+    letter-spacing: 0.5px;
+}
+
+.devlog-date {
+    font-size: 13px;
+    color: var(--text-main);
+    min-width: 70px;
+    letter-spacing: 0.5px;
+    transition: color 0.2s;
+}
+
+.devlog-card:hover .devlog-date {
+    color: var(--accent);
+}
+
+.devlog-card-body {
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-main);
+    letter-spacing: 0.3px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
 .devlog-entry {
@@ -868,13 +944,6 @@ lottie-player {
     padding: 10px 0;
     border-bottom: 1px solid var(--border);
     align-items: flex-start;
-}
-
-.devlog-date {
-    font-size: 11px;
-    color: var(--accent);
-    min-width: 70px;
-    letter-spacing: 0.5px;
 }
 
 .devlog-text {
@@ -981,9 +1050,10 @@ lottie-player {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 14px;
+    padding: 8px 18px 8px 14px;
     cursor: pointer;
     color: var(--subtext0);
+    white-space: nowrap; 
 }
 
 .ctx-item .ctx-icon {
