@@ -1210,6 +1210,7 @@ body,
 #desktop,
 #start-menu,
 #taskbar,
+#taskbar-guard,
 #context-menu,
 #boot-screen {
     cursor: url('assets/cursors/default-alt-dark.png') 4 1, auto;
