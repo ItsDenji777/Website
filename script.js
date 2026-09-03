@@ -911,6 +911,34 @@ async function loadDevlogData(win) {
     timeline.classList.add('slide-up');
 }
 
+(function() {
+  function makeAllImagesNotDraggable() {
+    document.querySelectorAll('img').forEach(img => {
+      if (!img.hasAttribute('draggable')) {
+        img.setAttribute('draggable', 'false');
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', makeAllImagesNotDraggable);
+  const observer = new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeName === 'IMG') {
+          node.setAttribute('draggable', 'false');
+        } else if (node.querySelectorAll) {
+          node.querySelectorAll('img').forEach(img => {
+            img.setAttribute('draggable', 'false');
+          });
+        }
+      });
+    });
+  });
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+})();
+
 function updateClock() {
     const now = new Date();
     document.getElementById('taskbar-time').textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
