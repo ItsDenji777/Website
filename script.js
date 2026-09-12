@@ -895,13 +895,19 @@ async function loadDevlogData(win) {
                 ? timestamp.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
                 : '';
 
+            const rawHtml = marked.parse(entry.content || '', { breaks: true, gfm: true });
+            const safeHtml = DOMPurify.sanitize(rawHtml, {
+                ALLOWED_TAGS: ['p','br','strong','em','b','i','u','s','a','ul','ol','li','code','pre','blockquote','h1','h2','h3','h4','h5','h6','hr','img','del','table','thead','tbody','tr','th','td'],
+                ALLOWED_ATTR: ['href','title','target','rel','src','alt']
+            }).replace(/<a /g, '<a target="_blank" rel="noopener noreferrer" ');
+
             return `
                 <div class="devlog-card">
                     <div class="devlog-card-header">
                         <span class="devlog-date">${dateStr}</span>
                         <span class="devlog-time">${timeStr}</span>
                     </div>
-                    <div class="devlog-card-body">${entry.content || ''}</div>
+                    <div class="devlog-card-body">${safeHtml}</div>
                 </div>
             `;
         }).join('');

@@ -149,7 +149,6 @@ lottie-player {
 #desktop {
     position: absolute;
     inset: 0;
-    /* bottom: calc(var(--taskbar-height) + 8px); */
     z-index: 0;
     overflow: hidden;
 }
@@ -851,6 +850,8 @@ lottie-player {
     letter-spacing: 0.5px;
 }
 
+/* ---------- DevLog ---------- */
+
 .devlog-content {
     padding: 20px;
 }
@@ -934,23 +935,129 @@ lottie-player {
     line-height: 1.6;
     color: var(--text-main);
     letter-spacing: 0.3px;
-    white-space: pre-wrap;
     word-wrap: break-word;
+    overflow-wrap: anywhere;
 }
 
-.devlog-entry {
-    display: flex;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    align-items: flex-start;
+.devlog-card-body p {
+    margin: 0 0 8px 0;
 }
 
-.devlog-text {
+.devlog-card-body p:last-child {
+    margin-bottom: 0;
+}
+
+.devlog-card-body strong,
+.devlog-card-body b {
+    color: var(--accent-light);
+    font-weight: 700;
+}
+
+.devlog-card-body em,
+.devlog-card-body i {
+    color: var(--subtext1);
+    font-style: italic;
+}
+
+.devlog-card-body a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.devlog-card-body a:hover {
+    color: var(--accent-light);
+}
+
+.devlog-card-body code {
+    font-family: 'Monocraft', monospace;
     font-size: 12px;
-    color: var(--text-dim);
-    letter-spacing: 0.4px;
+    background: var(--surface2);
+    color: var(--text-main);
+    padding: 1px 5px;
+    border: 1px solid var(--border);
 }
+
+.devlog-card-body pre {
+    background: var(--crust);
+    border: 2px solid var(--border);
+    padding: 10px 12px;
+    overflow-x: auto;
+    margin: 8px 0;
+}
+
+.devlog-card-body pre code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.devlog-card-body ul,
+.devlog-card-body ol {
+    margin: 6px 0 8px 0;
+    padding-left: 22px;
+}
+
+.devlog-card-body li {
+    margin: 2px 0;
+}
+
+.devlog-card-body blockquote {
+    border-left: 3px solid var(--accent);
+    padding: 4px 10px;
+    margin: 8px 0;
+    color: var(--text-dim);
+    background: rgba(124, 77, 255, 0.06);
+}
+
+.devlog-card-body h1,
+.devlog-card-body h2,
+.devlog-card-body h3,
+.devlog-card-body h4 {
+    color: var(--text-main);
+    margin: 10px 0 6px 0;
+    letter-spacing: 0.5px;
+    border-bottom: none;
+}
+
+.devlog-card-body h1 { font-size: 16px; }
+.devlog-card-body h2 { font-size: 15px; }
+.devlog-card-body h3 { font-size: 14px; }
+.devlog-card-body h4 { font-size: 13px; }
+
+.devlog-card-body hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 10px 0;
+}
+
+.devlog-card-body img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 6px 0;
+}
+
+.devlog-card-body table {
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 12px;
+}
+
+.devlog-card-body th,
+.devlog-card-body td {
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+}
+
+.devlog-card-body th {
+    background: var(--surface2);
+    color: var(--text-main);
+}
+
+/* ---------- Contact ---------- */
 
 .contact-content {
     padding: 20px;
@@ -994,6 +1101,8 @@ lottie-player {
 .contact-content button:hover {
     filter: brightness(1.1);
 }
+
+/* ---------- About OS ---------- */
 
 .aboutos-content {
     padding: 20px;
@@ -1046,6 +1155,8 @@ lottie-player {
     scale: 0.8;
 }
 
+/* ---------- Context Menu ---------- */
+
 .ctx-item {
     display: flex;
     align-items: center;
@@ -1053,7 +1164,7 @@ lottie-player {
     padding: 8px 18px 8px 14px;
     cursor: pointer;
     color: var(--subtext0);
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 
 .ctx-item .ctx-icon {
@@ -1075,6 +1186,8 @@ lottie-player {
     color: var(--text-dim);
     opacity: 0.7;
 }
+
+/* ---------- Custom Buttons ---------- */
 
 .custom-send-btn {
     width: 200px;
@@ -1171,6 +1284,8 @@ lottie-player {
     height: 31px;
 }
 
+/* ---------- Scrollbars ---------- */
+
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -1205,6 +1320,8 @@ lottie-player {
 ::-webkit-scrollbar-button {
     display: none;
 }
+
+/* ---------- Custom Cursors ---------- */
 
 body,
 #desktop,
