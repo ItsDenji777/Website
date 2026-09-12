@@ -1,0 +1,87 @@
+name: Keep Supabase Alive
+
+on:
+  schedule:
+    # Runs every Monday, Wednesday, and Friday at 00:00 UTC
+    - cron: '0 0 * * 1,3,5'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Log workflow start
+        run: |
+          echo "==============================================="
+          echo "Keep Supabase Alive - workflow started"
+          echo "Timestamp (UTC): $(date -u +"%Y-%m-%d %H:%M:%S")"
+          echo "Triggered by: ${{ github.event_name }}"
+          echo "Repository: ${{ github.repository }}"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "==============================================="
+
+      - name: Validate secrets
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          echo "Checking required secrets..."
+          if [ -z "$SUPABASE_URL" ]; then
+            echo "ERROR: SUPABASE_URL secret is missing or empty."
+            exit 1
+          fi
+          if [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "ERROR: SUPABASE_ANON_KEY secret is missing or empty."
+            exit 1
+          fi
+          echo "SUPABASE_URL is set (length: ${#SUPABASE_URL} chars)"
+          echo "SUPABASE_ANON_KEY is set (length: ${#SUPABASE_ANON_KEY} chars)"
+          echo "Secret validation passed."
+
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          echo "-----------------------------------------------"
+          echo "Pinging Supabase endpoint:"
+          echo "  $SUPABASE_URL/rest/v1/devlog_entries?select=id&limit=1"
+          echo "-----------------------------------------------"
+
+          START_TIME=$(date +%s%N)
+
+          HTTP_STATUS=$(curl -s -o /tmp/supabase_response.txt -w "%{http_code}" \
+            --max-time 30 \
+            "$SUPABASE_URL/rest/v1/devlog_entries?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+
+          END_TIME=$(date +%s%N)
+          DURATION_MS=$(( (END_TIME - START_TIME) / 1000000 ))
+
+          echo "Response time: ${DURATION_MS} ms"
+          echo "HTTP status: $HTTP_STATUS"
+          echo "-----------------------------------------------"
+          echo "Response body:"
+          cat /tmp/supabase_response.txt
+          echo ""
+          echo "-----------------------------------------------"
+
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 500 ]; then
+            echo "Result: SUCCESS - Supabase is alive."
+            echo "Project has been kept active for this cycle."
+          else
+            echo "Result: FAILURE - Supabase ping returned an unexpected status."
+            exit 1
+          fi
+
+      - name: Log workflow summary
+        if: always()
+        run: |
+          echo "==============================================="
+          echo "Workflow finished"
+          echo "End timestamp (UTC): $(date -u +"%Y-%m-%d %H:%M:%S")"
+          echo "Job status: ${{ job.status }}"
+          echo "Next scheduled run: Monday, Wednesday, or Friday at 00:00 UTC"
+          echo "==============================================="
