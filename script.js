@@ -2,6 +2,17 @@ const SUPABASE_URL = 'https://kiwempyqknlyumevwkeu.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpd2VtcHlxa25seXVtZXZ3a2V1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMzEzNzMsImV4cCI6MjEwMzYwNzM3M30.y5PLVDQtMLAK12GQEMoCH2BjLHgIB2hicRUg5jwI4Hg';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+const isMobile = window.matchMedia('(max-width: 900px), (pointer: coarse) and (hover: none)').matches;
+
+if (isMobile) {
+    window.addEventListener('DOMContentLoaded', () => {
+        document.body.style.cursor = 'default';
+        document.body.style.overflow = 'auto';
+    });
+} else {
+    // Normal desktop flow
+}
+
 let appData = {};
 let devlogCache = null;
 
@@ -1028,4 +1039,6 @@ function initDesktop() {
     initStartMenu();
 }
 
-runBoot();
+if (!isMobile) {
+    runBoot();
+}

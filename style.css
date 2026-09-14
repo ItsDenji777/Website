@@ -1355,3 +1355,72 @@ textarea,
 .window-content {
     cursor: url('assets/cursors/default-alt-dark.png') 4 1, auto;
 }
+
+#mobile-message {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: #181926;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px 24px;
+    gap: 16px;
+    font-family: 'Monocraft', monospace;
+    color: var(--text-main);
+}
+
+#mobile-message .mobile-logo {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+
+#mobile-message h1 {
+    font-size: 40px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    font-weight: 800;
+}
+
+#mobile-message p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    max-width: 320px;
+    letter-spacing: 0.4px;
+}
+
+#mobile-message .mobile-link {
+    margin-top: 8px;
+    padding: 12px 20px;
+    background: var(--accent);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    border: 2px solid var(--accent-light);
+    transition: filter 0.2s, transform 0.2s;
+}
+
+#mobile-message .mobile-link:hover {
+    filter: brightness(1.15);
+}
+
+#mobile-message .mobile-link:active {
+    transform: translateY(1px);
+}
+
+/* Show mobile message and hide everything else on touch / small screens */
+@media (max-width: 900px), (pointer: coarse) and (hover: none) {
+    #mobile-message {
+        display: flex;
+    }
+
+    body > *:not(#mobile-message) {
+        display: none !important;
+    }
+}
