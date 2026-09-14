@@ -30,9 +30,21 @@
     "link": "https://cosmic-diary.infinityfree.io"
   },
   {
+    "title": "Discify Bot",
+    "description": "A Discord music downloader for finding and downloading songs directly through Discord. ",
+    "tech": ["Python", "FFmpeg", "discord.py"],
+    "link": "https://github.com/ItsDenji777/Discify-Bot"
+  },
+  {
     "title": "Userplugins",
     "description": "Collection of Vencord Userplugins to improve your experiance!",
     "tech": ["TypeScript"],
     "link": "https://github.com/NuzProjects/Vencord-Userplugins"
+  },
+  {
+    "title": "Denjify Bot",
+    "description": "A Telegram music downloader for finding and downloading songs directly through Telegram. ",
+    "tech": ["Python", "FFmpeg", "Mutagen"],
+    "link": "https://github.com/ItsDenji777/Denjify-Bot"
   }
 ]
