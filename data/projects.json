@@ -15,19 +15,13 @@
     "title": "Resilient",
     "description": "A full‑stack Persian e‑commerce platform for a clothing brand – cart, accounts, order tracking, and a complete admin panel.",
     "tech": ["PHP", "HTML", "CSS", "MySQL"],
-    "link": "https://resilient.ir"
-  },
-  {
-    "title": "Nata",
-    "description": "a Bridge between stuedents and their families with the school",
-    "tech": ["C#", "HTML", "CSS", "JavaScript"],
-    "link": "https://app.nata.exirdanesh.ir"
+    "link": "https://github.com/ItsDenji777/Resilient"
   },
   {
     "title": "Cosmic Diary",
     "description": "a space-themed community platform where users write diary logs and build & share custom planets in a growing collaborative universe.",
     "tech": ["PHP", "HTML", "CSS", "MySQL", "JavaScript"],
-    "link": "https://cosmic-diary.infinityfree.io"
+    "link": "https://github.com/ItsDenji777/CosmicDiary"
   },
   {
     "title": "Discify Bot",
