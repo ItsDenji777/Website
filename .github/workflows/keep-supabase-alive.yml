@@ -2,7 +2,7 @@ name: Keep Supabase Alive
 
 on:
   schedule:
-    # Runs every 3 days at 06:00 UTC (Sunday, Wednesday, Saturday)
+    # Runs every 3 days at 06:00 UTC (within the 7-day inactivity window)
     - cron: '0 6 */3 * *'
   workflow_dispatch:
 
@@ -11,34 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Log workflow start
-        run: |
-          echo "==============================================="
-          echo "Keep Supabase Alive - workflow started"
-          echo "Timestamp (UTC): $(date -u +'%Y-%m-%d %H:%M:%S')"
-          echo "Triggered by: ${{ github.event_name }}"
-          echo "Repository: ${{ github.repository }}"
-          echo "Run ID: ${{ github.run_id }}"
-          echo "==============================================="
-
-      - name: Validate secrets
-        env:
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
-        run: |
-          echo "Checking required secrets..."
-          if [ -z "$SUPABASE_URL" ]; then
-            echo "ERROR: SUPABASE_URL secret is missing or empty."
-            exit 1
-          fi
-          if [ -z "$SUPABASE_ANON_KEY" ]; then
-            echo "ERROR: SUPABASE_ANON_KEY secret is missing or empty."
-            exit 1
-          fi
-          echo "SUPABASE_URL is set (length: ${#SUPABASE_URL} chars)"
-          echo "SUPABASE_ANON_KEY is set (length: ${#SUPABASE_ANON_KEY} chars)"
-          echo "Secret validation passed."
-
       - name: Insert heartbeat row
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -48,48 +20,15 @@ jobs:
           import os, json, sys, urllib.request, urllib.error
           from datetime import datetime, timezone
 
-          # Strip any accidental whitespace or newlines from secrets
-          raw_url = os.environ.get('SUPABASE_URL', '')
-          raw_key = os.environ.get('SUPABASE_ANON_KEY', '')
-
-          url = raw_url.strip().rstrip('/')
-          key = raw_key.strip()
-
-          print('-----------------------------------------------')
-          print('Secret diagnostics:')
-          print(f'  SUPABASE_URL raw length: {len(raw_url)}, stripped length: {len(url)}')
-          print(f'  SUPABASE_ANON_KEY raw length: {len(raw_key)}, stripped length: {len(key)}')
-          print(f'  URL starts with https://: {url.startswith("https://")}')
-          print(f'  URL ends with .supabase.co: {url.endswith(".supabase.co")}')
-          print(f'  Key starts with "eyJ": {key.startswith("eyJ")}')
-          print(f'  Key contains whitespace: {any(c.isspace() for c in key)}')
-          print(f'  Key contains quotes: {chr(34) in key or chr(39) in key}')
-          print(f'  Key has non-ASCII chars: {any(ord(c) > 127 for c in key)}')
-          print('-----------------------------------------------')
-
-          # Validation
-          if not url.startswith('https://'):
-              print('ERROR: SUPABASE_URL does not start with https://')
-              sys.exit(1)
-          if not key.startswith('eyJ'):
-              print('ERROR: SUPABASE_ANON_KEY does not look like a JWT (should start with eyJ)')
-              sys.exit(1)
-          if any(c.isspace() for c in key):
-              print('ERROR: SUPABASE_ANON_KEY still contains whitespace after stripping')
-              sys.exit(1)
-          if any(ord(c) > 127 for c in key):
-              print('ERROR: SUPABASE_ANON_KEY contains non-ASCII characters')
-              sys.exit(1)
-
+          url = os.environ['SUPABASE_URL'].strip().rstrip('/')
+          key = os.environ['SUPABASE_ANON_KEY'].strip()
           endpoint = url + '/rest/v1/keep_alive'
+
           payload = json.dumps({
               'pinged_at': datetime.now(timezone.utc).isoformat()
           }).encode('utf-8')
 
-          print(f'Endpoint: {endpoint}')
-          print(f'Payload: {payload.decode()}')
-          print(f'Payload size: {len(payload)} bytes')
-          print('-----------------------------------------------')
+          print(f'POST {endpoint}')
 
           req = urllib.request.Request(endpoint, data=payload, method='POST')
           req.add_header('apikey', key)
@@ -99,29 +38,11 @@ jobs:
 
           try:
               with urllib.request.urlopen(req, timeout=30) as resp:
-                  print(f'HTTP Status: {resp.status}')
-                  print('Result: SUCCESS - heartbeat row inserted.')
-                  print('Supabase database activity has been reset for this cycle.')
+                  print(f'HTTP {resp.status} - heartbeat inserted, Supabase kept active.')
           except urllib.error.HTTPError as e:
-              print(f'HTTP Status: {e.code}')
-              try:
-                  print(f'Error body: {e.read().decode()}')
-              except Exception:
-                  pass
-              print('Result: FAILURE')
+              print(f'HTTP {e.code} - {e.read().decode()}')
               sys.exit(1)
           except Exception as e:
-              print(f'Unexpected error: {type(e).__name__}: {e}')
-              print('Result: FAILURE')
+              print(f'Error: {type(e).__name__}: {e}')
               sys.exit(1)
           PYEOF
-
-      - name: Log workflow summary
-        if: always()
-        run: |
-          echo "==============================================="
-          echo "Workflow finished"
-          echo "End timestamp (UTC): $(date -u +'%Y-%m-%d %H:%M:%S')"
-          echo "Job status: ${{ job.status }}"
-          echo "Next scheduled run: in 3 days at 06:00 UTC"
-          echo "==============================================="
