@@ -47,9 +47,8 @@ jobs:
           echo "-----------------------------------------------"
           echo "Performing INSERT into keep_alive table"
           echo "Endpoint: $SUPABASE_URL/rest/v1/keep_alive"
+          echo "Payload: {}"
           echo "-----------------------------------------------"
-
-          PAYLOAD="{\"pinged_at\":\"$(date -u +'%Y-%m-%dT%H:%M:%SZ')\"}"
 
           START_TIME=$(date +%s%N)
 
@@ -60,7 +59,7 @@ jobs:
             -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            -d "$PAYLOAD")
+            --data-raw '{}')
 
           END_TIME=$(date +%s%N)
           DURATION_MS=$(( (END_TIME - START_TIME) / 1000000 ))
@@ -80,7 +79,7 @@ jobs:
             echo "Troubleshooting:"
             echo "  - Ensure the keep_alive table exists."
             echo "  - Ensure the RLS policy allows anon inserts."
-            echo "  - Ensure SUPABASE_ANON_KEY is the public anon key."
+            echo "  - Ensure the column pinged_at has a default of now()."
             exit 1
           fi
 
