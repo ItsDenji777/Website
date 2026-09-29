@@ -47,7 +47,15 @@ jobs:
           echo "-----------------------------------------------"
           echo "Performing INSERT into keep_alive table"
           echo "Endpoint: $SUPABASE_URL/rest/v1/keep_alive"
-          echo "Payload: {}"
+          echo "-----------------------------------------------"
+
+          # Write JSON payload to a file to avoid all shell escaping issues
+          printf '{"pinged_at": "%s"}' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > /tmp/payload.json
+
+          echo "Payload file contents:"
+          cat /tmp/payload.json
+          echo ""
+          echo "Payload byte size: $(wc -c < /tmp/payload.json)"
           echo "-----------------------------------------------"
 
           START_TIME=$(date +%s%N)
@@ -59,7 +67,7 @@ jobs:
             -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
             -H "Content-Type: application/json" \
             -H "Prefer: return=minimal" \
-            --data-raw '{}')
+            --data-binary @/tmp/payload.json)
 
           END_TIME=$(date +%s%N)
           DURATION_MS=$(( (END_TIME - START_TIME) / 1000000 ))
