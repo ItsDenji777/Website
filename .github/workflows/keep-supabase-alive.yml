@@ -48,21 +48,52 @@ jobs:
           import os, json, sys, urllib.request, urllib.error
           from datetime import datetime, timezone
 
-          url = os.environ['SUPABASE_URL'].rstrip('/') + '/rest/v1/keep_alive'
-          key = os.environ['SUPABASE_ANON_KEY']
+          # Strip any accidental whitespace or newlines from secrets
+          raw_url = os.environ.get('SUPABASE_URL', '')
+          raw_key = os.environ.get('SUPABASE_ANON_KEY', '')
+
+          url = raw_url.strip().rstrip('/')
+          key = raw_key.strip()
+
+          print('-----------------------------------------------')
+          print('Secret diagnostics:')
+          print(f'  SUPABASE_URL raw length: {len(raw_url)}, stripped length: {len(url)}')
+          print(f'  SUPABASE_ANON_KEY raw length: {len(raw_key)}, stripped length: {len(key)}')
+          print(f'  URL starts with https://: {url.startswith("https://")}')
+          print(f'  URL ends with .supabase.co: {url.endswith(".supabase.co")}')
+          print(f'  Key starts with "eyJ": {key.startswith("eyJ")}')
+          print(f'  Key contains whitespace: {any(c.isspace() for c in key)}')
+          print(f'  Key contains quotes: {chr(34) in key or chr(39) in key}')
+          print(f'  Key has non-ASCII chars: {any(ord(c) > 127 for c in key)}')
+          print('-----------------------------------------------')
+
+          # Validation
+          if not url.startswith('https://'):
+              print('ERROR: SUPABASE_URL does not start with https://')
+              sys.exit(1)
+          if not key.startswith('eyJ'):
+              print('ERROR: SUPABASE_ANON_KEY does not look like a JWT (should start with eyJ)')
+              sys.exit(1)
+          if any(c.isspace() for c in key):
+              print('ERROR: SUPABASE_ANON_KEY still contains whitespace after stripping')
+              sys.exit(1)
+          if any(ord(c) > 127 for c in key):
+              print('ERROR: SUPABASE_ANON_KEY contains non-ASCII characters')
+              sys.exit(1)
+
+          endpoint = url + '/rest/v1/keep_alive'
           payload = json.dumps({
               'pinged_at': datetime.now(timezone.utc).isoformat()
           }).encode('utf-8')
 
-          print('-----------------------------------------------')
-          print(f'Endpoint: {url}')
+          print(f'Endpoint: {endpoint}')
           print(f'Payload: {payload.decode()}')
           print(f'Payload size: {len(payload)} bytes')
           print('-----------------------------------------------')
 
-          req = urllib.request.Request(url, data=payload, method='POST')
+          req = urllib.request.Request(endpoint, data=payload, method='POST')
           req.add_header('apikey', key)
-          req.add_header('Authorization', f'Bearer {key}')
+          req.add_header('Authorization', 'Bearer ' + key)
           req.add_header('Content-Type', 'application/json')
           req.add_header('Prefer', 'return=minimal')
 
@@ -73,11 +104,14 @@ jobs:
                   print('Supabase database activity has been reset for this cycle.')
           except urllib.error.HTTPError as e:
               print(f'HTTP Status: {e.code}')
-              print(f'Error body: {e.read().decode()}')
+              try:
+                  print(f'Error body: {e.read().decode()}')
+              except Exception:
+                  pass
               print('Result: FAILURE')
               sys.exit(1)
           except Exception as e:
-              print(f'Unexpected error: {e}')
+              print(f'Unexpected error: {type(e).__name__}: {e}')
               print('Result: FAILURE')
               sys.exit(1)
           PYEOF
