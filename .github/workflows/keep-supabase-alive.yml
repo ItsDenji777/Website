@@ -44,52 +44,43 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          echo "-----------------------------------------------"
-          echo "Performing INSERT into keep_alive table"
-          echo "Endpoint: $SUPABASE_URL/rest/v1/keep_alive"
-          echo "-----------------------------------------------"
+          python3 << 'PYEOF'
+          import os, json, sys, urllib.request, urllib.error
+          from datetime import datetime, timezone
 
-          # Write JSON payload to a file to avoid all shell escaping issues
-          printf '{"pinged_at": "%s"}' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > /tmp/payload.json
+          url = os.environ['SUPABASE_URL'].rstrip('/') + '/rest/v1/keep_alive'
+          key = os.environ['SUPABASE_ANON_KEY']
+          payload = json.dumps({
+              'pinged_at': datetime.now(timezone.utc).isoformat()
+          }).encode('utf-8')
 
-          echo "Payload file contents:"
-          cat /tmp/payload.json
-          echo ""
-          echo "Payload byte size: $(wc -c < /tmp/payload.json)"
-          echo "-----------------------------------------------"
+          print('-----------------------------------------------')
+          print(f'Endpoint: {url}')
+          print(f'Payload: {payload.decode()}')
+          print(f'Payload size: {len(payload)} bytes')
+          print('-----------------------------------------------')
 
-          START_TIME=$(date +%s%N)
+          req = urllib.request.Request(url, data=payload, method='POST')
+          req.add_header('apikey', key)
+          req.add_header('Authorization', f'Bearer {key}')
+          req.add_header('Content-Type', 'application/json')
+          req.add_header('Prefer', 'return=minimal')
 
-          HTTP_STATUS=$(curl -s -o /tmp/supabase_response.txt -w "%{http_code}" \
-            --max-time 30 \
-            -X POST "$SUPABASE_URL/rest/v1/keep_alive" \
-            -H "apikey: $SUPABASE_ANON_KEY" \
-            -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
-            -H "Content-Type: application/json" \
-            -H "Prefer: return=minimal" \
-            --data-binary @/tmp/payload.json)
-
-          END_TIME=$(date +%s%N)
-          DURATION_MS=$(( (END_TIME - START_TIME) / 1000000 ))
-
-          echo "Response time: ${DURATION_MS} ms"
-          echo "HTTP status: $HTTP_STATUS"
-          echo "-----------------------------------------------"
-
-          if [ "$HTTP_STATUS" -eq 201 ] || [ "$HTTP_STATUS" -eq 204 ]; then
-            echo "Result: SUCCESS - heartbeat row inserted."
-            echo "Supabase database activity has been reset for this cycle."
-          else
-            echo "Result: FAILURE - unexpected HTTP status."
-            echo "Response body:"
-            cat /tmp/supabase_response.txt
-            echo ""
-            echo "Troubleshooting:"
-            echo "  - Ensure the keep_alive table exists."
-            echo "  - Ensure the RLS policy allows anon inserts."
-            echo "  - Ensure the column pinged_at has a default of now()."
-            exit 1
-          fi
+          try:
+              with urllib.request.urlopen(req, timeout=30) as resp:
+                  print(f'HTTP Status: {resp.status}')
+                  print('Result: SUCCESS - heartbeat row inserted.')
+                  print('Supabase database activity has been reset for this cycle.')
+          except urllib.error.HTTPError as e:
+              print(f'HTTP Status: {e.code}')
+              print(f'Error body: {e.read().decode()}')
+              print('Result: FAILURE')
+              sys.exit(1)
+          except Exception as e:
+              print(f'Unexpected error: {e}')
+              print('Result: FAILURE')
+              sys.exit(1)
+          PYEOF
 
       - name: Log workflow summary
         if: always()
