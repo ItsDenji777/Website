@@ -92,12 +92,35 @@ const APP_DEFS = {
             return `<div class="techstack-content">
                 <h3 style="color:var(--text-main);">Technologies I Use</h3>
                 <p style="color:var(--text-dim); font-size:12px; margin-bottom:12px;">A curated list of tools and frameworks I work with daily.</p>
-                <div class="tech-grid">${techs.map(t => `
-                    <div class="tech-card">
-                        <img src="assets/svg/tech/${t.icon}" alt="${t.name}" style="width:75px; height:75px; object-fit:contain; margin-bottom:6px;">
+                <div class="tech-grid">${techs.map(t => {
+                    const isLearning = t.Learning;
+                    const percentage = t.learntpercentage !== undefined ? t.learntpercentage : null;
+                    
+                    return `
+                    <div class="tech-card ${isLearning ? 'learning' : ''}">
+                        ${isLearning ? `<div class="learning-badge">Learning</div>` : ''}
+                        
+                        <div class="tech-icon-wrapper">
+                            ${isLearning ? `
+                                <!-- Flat colored silhouette using mask -->
+                                <div class="tech-icon-base" style="mask-image: url('assets/svg/tech/${t.icon}'); -webkit-mask-image: url('assets/svg/tech/${t.icon}');"></div>
+                                
+                                <!-- Colored fill for the percentage -->
+                                ${percentage !== null ? `
+                                    <div class="tech-icon-fill" style="height: ${percentage}%;">
+                                        <img src="assets/svg/tech/${t.icon}" alt="${t.name}">
+                                    </div>
+                                ` : ''}
+                            ` : `
+                                <!-- Normal full-color SVG for non-learning items -->
+                                <img src="assets/svg/tech/${t.icon}" alt="${t.name}" class="tech-icon-img">
+                            `}
+                        </div>
+                        
                         <div class="tech-name">${t.name}</div>
+                        ${percentage !== null ? `<div class="tech-percentage">${percentage}%</div>` : ''}
                     </div>
-                `).join('')}</div>
+                `}).join('')}</div>
             </div>`;
         }
     },
