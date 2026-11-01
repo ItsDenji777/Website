@@ -1,6 +1,4 @@
-const SUPABASE_URL = 'https://kiwempyqknlyumevwkeu.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtpd2VtcHlxa25seXVtZXZ3a2V1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgwMzEzNzMsImV4cCI6MjEwMzYwNzM3M30.y5PLVDQtMLAK12GQEMoCH2BjLHgIB2hicRUg5jwI4Hg';
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+const DEVLOG_API_URL = 'https://devlog-api.denjisworkspace.workers.dev/devlogs';
 
 const isMobile = window.matchMedia('(max-width: 900px), (pointer: coarse) and (hover: none)').matches;
 
@@ -95,16 +93,16 @@ const APP_DEFS = {
                 <div class="tech-grid">${techs.map(t => {
                     const isLearning = t.Learning;
                     const percentage = t.learntpercentage !== undefined ? t.learntpercentage : null;
-                    
+
                     return `
                     <div class="tech-card ${isLearning ? 'learning' : ''}">
                         ${isLearning ? `<div class="learning-badge">Learning</div>` : ''}
-                        
+
                         <div class="tech-icon-wrapper">
                             ${isLearning ? `
                                 <!-- Flat colored silhouette using mask -->
                                 <div class="tech-icon-base" style="mask-image: url('assets/svg/tech/${t.icon}'); -webkit-mask-image: url('assets/svg/tech/${t.icon}');"></div>
-                                
+
                                 <!-- Colored fill for the percentage -->
                                 ${percentage !== null ? `
                                     <div class="tech-icon-fill" style="height: ${percentage}%;">
@@ -116,7 +114,7 @@ const APP_DEFS = {
                                 <img src="assets/svg/tech/${t.icon}" alt="${t.name}" class="tech-icon-img">
                             `}
                         </div>
-                        
+
                         <div class="tech-name">${t.name}</div>
                         ${percentage !== null ? `<div class="tech-percentage">${percentage}%</div>` : ''}
                     </div>
@@ -882,16 +880,14 @@ contextMenu.querySelectorAll('.ctx-item').forEach(item => {
 
 async function fetchDevlogEntries() {
     try {
-        const { data, error } = await supabaseClient
-            .from('devlog_entries')
-            .select('*')
-            .order('created_at', { ascending: false });
+        const response = await fetch(DEVLOG_API_URL);
 
-        if (error) {
-            console.error('Supabase error:', error);
-            return [];
+        if (!response.ok) {
+            throw new Error(`DevLog API error: ${response.status}`);
         }
-        return data || [];
+
+        const entries = await response.json();
+        return Array.isArray(entries) ? entries : [];
     } catch (err) {
         console.error('Failed to fetch DevLog:', err);
         return [];
