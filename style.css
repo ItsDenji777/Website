@@ -1463,10 +1463,9 @@ textarea,
 }
 
 #mobile-message .mobile-logo {
-    width: 120px;
-    height: 120px;
+    width: 220px;
+    height: 220px;
     object-fit: contain;
-    image-rendering: pixelated;
 }
 
 #mobile-message h1 {
