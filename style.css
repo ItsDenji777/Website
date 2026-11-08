@@ -1486,22 +1486,41 @@ textarea,
 
 #mobile-message .mobile-link {
     margin-top: 8px;
-    padding: 12px 20px;
-    background: var(--accent);
-    color: #fff;
+    min-width: 220px;
+    max-width: 100%;
+    height: 60px;
+    padding: 0 20px;
+    background-image: url('assets/ui/btn.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    border: 2px solid var(--accent-light);
-    transition: filter 0.2s, transform 0.2s;
+    font-family: 'Monocraft', monospace;
+    font-size: 14px;
+    color: var(--text-main);
+    letter-spacing: 0.8px;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#mobile-message .mobile-link span {
+    pointer-events: none;
+    margin-top: -10px;
 }
 
 #mobile-message .mobile-link:hover {
-    filter: brightness(1.15);
+    background-image: url('assets/ui/btn_hover.png');
 }
 
 #mobile-message .mobile-link:active {
-    transform: translateY(1px);
+    background-image: url('assets/ui/btn_click.png');
+}
+
+#mobile-message .mobile-link:active span {
+    margin-top: 2px;
 }
 
 /* Show mobile message and hide everything else on touch / small screens */

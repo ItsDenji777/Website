@@ -222,6 +222,9 @@ const bootLottie = document.getElementById('boot-lottie');
 
 bootScreen.addEventListener('contextmenu', e => e.preventDefault());
 
+let bootFinished = false;
+let bootTimeoutId = null;
+
 function createLottie() {
     const player = document.createElement('lottie-player');
     player.setAttribute('src', 'assets/lottie/loading.json');
@@ -230,9 +233,16 @@ function createLottie() {
     player.loop = false;
     player.setAttribute('autoplay', '');
     player.setAttribute('style', 'width: 100%; height: 100%;');
+
     player.addEventListener('complete', () => {
         finishBoot();
     });
+
+    player.addEventListener('error', () => {
+        console.warn('[boot] Lottie failed to load — skipping boot animation.');
+        finishBoot();
+    });
+
     bootLottie.appendChild(player);
 }
 
@@ -241,9 +251,22 @@ async function runBoot() {
     bootLogo.classList.add('visible');
     bootLogoText.classList.add('visible');
     bootLottie.classList.add('visible');
+
+    bootTimeoutId = setTimeout(() => {
+        console.warn('[boot] Boot animation timed out — forcing completion.');
+        finishBoot();
+    }, 8000);
 }
 
 async function finishBoot() {
+    if (bootFinished) return;
+    bootFinished = true;
+
+    if (bootTimeoutId !== null) {
+        clearTimeout(bootTimeoutId);
+        bootTimeoutId = null;
+    }
+
     await loadAppData();
     await preloadAssets();
 
@@ -309,13 +332,13 @@ function createWindow(appId) {
             <span class="window-title">${def.title}</span>
             <div class="window-controls">
                 <button class="win-minimize" title="Minimize">
-                    <div class="control-icon" style="mask-image: url('svg/minimize.svg'); -webkit-mask-image: url('assets/svg/minimize.svg');"></div>
+                    <div class="control-icon" style="mask-image: url('assets/svg/minimize.svg'); -webkit-mask-image: url('assets/svg/minimize.svg');"></div>
                 </button>
                 <button class="win-maximize" title="Maximize">
-                    <div class="control-icon" style="mask-image: url('svg/maximize.svg'); -webkit-mask-image: url('assets/svg/maximize.svg');"></div>
+                    <div class="control-icon" style="mask-image: url('assets/svg/maximize.svg'); -webkit-mask-image: url('assets/svg/maximize.svg');"></div>
                 </button>
                 <button class="win-close" title="Close">
-                    <div class="control-icon" style="mask-image: url('svg/close.svg'); -webkit-mask-image: url('assets/svg/close.svg');"></div>
+                    <div class="control-icon" style="mask-image: url('assets/svg/close.svg'); -webkit-mask-image: url('assets/svg/close.svg');"></div>
                 </button>
             </div>
         </div>
